@@ -86,10 +86,12 @@ class ModuleOptions implements \TYPO3\CMS\Core\SingletonInterface {
     }
 
     /**
-     * @param $methodName
-     * @param $arguments
+     * Split up $methodName after "get"
+     * Then tries to return config value in $this->options
+     *
+     * @param string $methodName Full method name
+     * @param array $arguments
      * @return mixed|null
-     * @throws \InvalidArgumentException
      */
     public function __call($methodName, $arguments) {
         if (is_array($this->options) && substr($methodName, 0, 3) === 'get' && strlen($methodName) > 5) {
@@ -100,6 +102,8 @@ class ModuleOptions implements \TYPO3\CMS\Core\SingletonInterface {
     }
 
     /**
+     * Returns config value if exists
+     *
      * @param $index
      * @return mixed
      */
