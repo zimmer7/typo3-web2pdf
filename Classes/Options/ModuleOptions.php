@@ -53,18 +53,19 @@ class ModuleOptions implements \TYPO3\CMS\Core\SingletonInterface {
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function initializeObject() {
-        $this->options = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'web2pdf', 'settings');
+        if ($this->options = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'web2pdf', 'settings')) {
 
+            if (is_array($this->options['pdfPregSearch']) && is_array($this->options['pdfPregReplace'])) {
+                $this->mergeReplaceConfiguration($this->options['pdfPregSearch'], $this->options['pdfPregReplace'], \Mittwald\Web2pdf\View\PdfView::PREG_REPLACEMENT_KEY);
+                unset($this->options['pdfPregSearch'], $this->options['pdfPregReplace']);
+            }
 
-        if (is_array($this->options['pdfPregSearch']) && is_array($this->options['pdfPregReplace'])) {
-            $this->mergeReplaceConfiguration($this->options['pdfPregSearch'], $this->options['pdfPregReplace'], \Mittwald\Web2pdf\View\PdfView::PREG_REPLACEMENT_KEY);
-            unset($this->options['pdfPregSearch'], $this->options['pdfPregReplace']);
+            if (is_array($this->options['pdfStrSearch']) && is_array($this->options['pdfStrReplace'])) {
+                $this->mergeReplaceConfiguration($this->options['pdfStrSearch'], $this->options['pdfStrReplace'], \Mittwald\Web2pdf\View\PdfView::STR_REPLACEMENT_KEY);
+                unset($this->options['pdfStrSearch'], $this->options['pdfStrReplace']);
+            }
         }
 
-        if (is_array($this->options['pdfStrSearch']) && is_array($this->options['pdfStrReplace'])) {
-            $this->mergeReplaceConfiguration($this->options['pdfStrSearch'], $this->options['pdfStrReplace'], \Mittwald\Web2pdf\View\PdfView::STR_REPLACEMENT_KEY);
-            unset($this->options['pdfStrSearch'], $this->options['pdfStrReplace']);
-        }
     }
 
     /**
@@ -91,7 +92,7 @@ class ModuleOptions implements \TYPO3\CMS\Core\SingletonInterface {
      * @throws \InvalidArgumentException
      */
     public function __call($methodName, $arguments) {
-        if (substr($methodName, 0, 3) === 'get' && strlen($methodName) > 5) {
+        if (is_array($this->options) && substr($methodName, 0, 3) === 'get' && strlen($methodName) > 5) {
             $propertyName = lcfirst(substr($methodName, 3));
             return $this->getConfigValue($propertyName);
         }
@@ -103,7 +104,7 @@ class ModuleOptions implements \TYPO3\CMS\Core\SingletonInterface {
      * @return mixed
      */
     protected function getConfigValue($index) {
-        if (array_key_exists($index, $this->options)) {
+        if (is_array($this->options) && array_key_exists($index, $this->options)) {
             return $this->options[$index];
         }
         return NULL;
