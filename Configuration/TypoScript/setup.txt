@@ -43,16 +43,6 @@ lib.web2pdf {
 
 # Need this line because typoscript config is not loaded without this line
 # May be a bug in TYPO3 Core up to 7.2
-config {
-	linkVars = L(0-3), ansicht
-	uniqueLinkVars = 1
-	sys_language_uid = 0
-	language = de
-	meaningfulTempFilePrefix = 64
-	prefixLocalAnchors = all
-	absRefPrefix = http://php55.dev/typo3-62/
-	simulateStaticDocuments = 0
-}
 
 # Example include of generate pdf link
-page.100 < lib.web2pdf
+#page.100 < lib.web2pdf
