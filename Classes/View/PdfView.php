@@ -25,6 +25,7 @@
 
 namespace Mittwald\Web2pdf\View;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
 
@@ -60,12 +61,30 @@ class PdfView extends TemplateView {
      * @return \TYPO3\CMS\Extbase\Mvc\Web\Response The rendered view
      */
     public function renderHtmlOutput($content, $pageTitle) {
+
+        $fileName = $this->fileNameUtility->convert($pageTitle) . '.pdf';
+        $filePath = GeneralUtility::getFileAbsFileName('typo3temp/' . $fileName);
+
         $content = $this->replaceStrings($content);
         $pdf = $this->getPdfObject();
         $pdf->WriteHTML($content);
+        $pdf->Output($filePath, 'F');
 
-        return $pdf->Output($this->fileNameUtility->convert($pageTitle) . '.pdf', 'D'); // Parameter D=>Display; F=>SaveAsFile
 
+        header('Content-Description: File Transfer');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: public, must-revalidate, max-age=0');
+        header('Pragma: public');
+        header('Expires: 0');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Content-Type: application/force-download');
+        header('Content-Type: application/octet-stream', false);
+        header('Content-Type: application/download', false);
+        header('Content-Type: application/pdf', false);
+        header('Content-Disposition: attachment; filename="' . $this->fileNameUtility->convert($pageTitle) . '.pdf' . '"');
+        readfile($filePath);
+        unlink($filePath);
+        exit;
     }
 
     /**
