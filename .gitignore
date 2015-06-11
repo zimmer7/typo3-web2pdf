@@ -1,3 +1,4 @@
 .idea
 Vendor
 composer.lock
+*.DS_Store
