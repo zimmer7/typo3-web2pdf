@@ -77,9 +77,6 @@ class PdfView extends TemplateView {
         header('Pragma: public');
         header('Expires: 0');
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Content-Type: application/force-download');
-        header('Content-Type: application/octet-stream', false);
-        header('Content-Type: application/download', false);
         header('Content-Type: application/pdf', false);
         header('Content-Disposition: attachment; filename="' . $this->fileNameUtility->convert($pageTitle) . '.pdf' . '"');
         readfile($filePath);
