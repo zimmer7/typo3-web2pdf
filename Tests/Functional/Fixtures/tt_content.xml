@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tt_content>
+        <uid>1</uid>
+        <pid>1</pid>
+        <CType>text</CType>
+        <header>Test</header>
+        <bodytext>Test</bodytext>
+    </tt_content>
+</dataset>
